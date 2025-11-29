@@ -1,4 +1,3 @@
-// src/pages/Signup.jsx
 import React, { useState } from 'react';
 import {
   Card,
@@ -38,7 +37,6 @@ const Signup = () => {
       await api.post('/user/signup', { username, email, password });
 
       setSuccessMsg('Signup successful! You can now login.');
-      // Small delay then redirect to login
       setTimeout(() => {
         navigate('/login');
       }, 800);

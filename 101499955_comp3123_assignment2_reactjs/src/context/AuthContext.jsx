@@ -1,4 +1,3 @@
-// src/context/AuthContext.jsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext(null);
@@ -6,7 +5,6 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
 
-  // Load token from localStorage on first render
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
     if (savedToken) {

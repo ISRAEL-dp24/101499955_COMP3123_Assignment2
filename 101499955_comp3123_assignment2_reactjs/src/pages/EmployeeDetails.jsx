@@ -1,4 +1,3 @@
-// src/pages/EmployeeDetails.jsx
 import React, { useEffect, useState } from 'react';
 import {
   Card,
@@ -40,7 +39,6 @@ const EmployeeDetails = () => {
 
   useEffect(() => {
     loadEmployee();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const formatDate = (value) => {

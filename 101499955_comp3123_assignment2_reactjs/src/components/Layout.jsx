@@ -1,4 +1,3 @@
-// src/components/Layout.jsx
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';

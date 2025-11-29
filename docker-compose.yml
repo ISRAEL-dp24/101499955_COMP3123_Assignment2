@@ -1,0 +1,40 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: comp3123-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build:
+      context: ./101499955_COMP3123_Assignment1
+      dockerfile: Dockerfile
+    container_name: comp3123-backend
+    restart: unless-stopped
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/comp3123_assignment1
+      - PORT=3000
+    depends_on:
+      - mongo
+    ports:
+      - "3001:3000"  # hostcontainer
+    
+
+  frontend:
+    build:
+      context: ./101499955_comp3123_assignment2_reactjs
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_BASE_URL=http://localhost:3001/api/v1
+    container_name: comp3123-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3002:80" 
+
+volumes:
+  mongo-data:

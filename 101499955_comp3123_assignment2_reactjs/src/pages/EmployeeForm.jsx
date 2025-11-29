@@ -1,4 +1,3 @@
-// src/pages/EmployeeForm.jsx
 import React, { useEffect, useState } from 'react';
 import {
   Card,
@@ -16,7 +15,7 @@ import api from '../api/api';
 
 const EmployeeForm = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // if id exists => edit mode
+  const { id } = useParams(); 
   const isEdit = Boolean(id);
 
   const [employeeId, setEmployeeId] = useState('');
@@ -31,11 +30,10 @@ const EmployeeForm = () => {
   const [profilePictureFile, setProfilePictureFile] = useState(null);
   const [currentProfilePicture, setCurrentProfilePicture] = useState(null);
 
-  const [loading, setLoading] = useState(isEdit); // only load when editing
+  const [loading, setLoading] = useState(isEdit);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  // Helper: format date string from API to YYYY-MM-DD for input[type="date"]
   const formatDateForInput = (value) => {
     if (!value) return '';
     const date = new Date(value);
@@ -46,7 +44,6 @@ const EmployeeForm = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Load existing employee when editing
   useEffect(() => {
     const fetchEmployee = async () => {
       if (!isEdit) return;

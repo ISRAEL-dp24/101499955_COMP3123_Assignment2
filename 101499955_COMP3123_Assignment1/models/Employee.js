@@ -9,7 +9,7 @@ const employeeSchema = new mongoose.Schema({
   salary: { type: Number, required: true },
   date_of_joining: { type: Date, required: true },
   department: { type: String, required: true },
-  // NEW: profile picture URL/path (optional)
+  
   profilePicture: { type: String, default: null }
 });
 

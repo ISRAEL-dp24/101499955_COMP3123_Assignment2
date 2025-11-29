@@ -4,18 +4,16 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = 'mySuperSecretKey2025'; // you can move this to env later
+const JWT_SECRET = 'mySuperSecretKey2025'; 
 
-// =======================
-// AUTH MIDDLEWARE
-// =======================
+
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   if (!authHeader) {
     return res.status(401).json({ message: 'No token provided' });
   }
 
-  // Expecting header like: "Bearer <token>"
+  
   const token = authHeader.split(' ')[1];
   if (!token) {
     return res.status(401).json({ message: 'Invalid authorization header format' });
@@ -23,7 +21,7 @@ const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded; // e.g. { id: user._id, iat, exp }
+    req.user = decoded; 
     next();
   } catch (error) {
     console.error('Token verification error:', error);
@@ -31,20 +29,16 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
-// =======================
-// SIGNUP
-// POST /api/v1/user/signup
-// =======================
+
 router.post('/signup', async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Basic validation
+    
     if (!username || !email || !password) {
       return res.status(400).json({ message: 'Username, email and password are required' });
     }
 
-    // Check if user already exists (by email or username)
     const existingUser = await User.findOne({
       $or: [{ email }, { username }]
     });
@@ -53,7 +47,6 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'User with this email or username already exists' });
     }
 
-    // Create user (password hashing is handled in User model pre-save hook)
     const user = new User({
       username,
       email,
@@ -76,11 +69,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// =======================
-// LOGIN
-// POST /api/v1/user/login
-// accepts either email OR username + password
-// =======================
+
 router.post('/login', async (req, res) => {
   try {
     const { email, username, password } = req.body;
@@ -91,25 +80,22 @@ router.post('/login', async (req, res) => {
       });
     }
 
-    // Find by email or username
     const user = await User.findOne({
       $or: [
         email ? { email } : null,
         username ? { username } : null
-      ].filter(Boolean) // remove nulls
+      ].filter(Boolean) 
     });
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Create JWT
     const token = jwt.sign(
       { id: user._id, username: user.username, email: user.email },
       JWT_SECRET,
@@ -126,6 +112,5 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// IMPORTANT: export the router function AND the middleware
 module.exports = router;
 module.exports.authenticateToken = authenticateToken;

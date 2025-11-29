@@ -7,14 +7,10 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 
-// Import auth middleware from userRoutes
+
 const { authenticateToken } = require('./userRoutes');
 
-// =======================
-// MULTER CONFIG FOR FILE UPLOADS
-// =======================
 
-// Ensure uploads directory exists
 const uploadDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -34,7 +30,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Helper: map Employee document to response object
+
 const mapEmployee = (req, emp) => {
   const relativePath = emp.profilePicture || null;
   const profilePictureUrl = relativePath
@@ -57,10 +53,7 @@ const mapEmployee = (req, emp) => {
 };
 
 
-// =======================
-// CREATE EMPLOYEE
-// POST /api/v1/emp/employees
-// =======================
+
 router.post(
   '/employees',
   authenticateToken,
@@ -78,7 +71,7 @@ router.post(
         department
       } = req.body;
 
-      // Basic validation
+      
       if (!employeeId || !firstName || !lastName || !email || !position || !salary || !date_of_joining || !department) {
         return res.status(400).json({
           message: 'All fields (employeeId, firstName, lastName, email, position, salary, date_of_joining, department) are required'
@@ -96,7 +89,7 @@ router.post(
         department
       });
 
-      // If file uploaded, save relative path
+      
       if (req.file) {
         employee.profilePicture = path.join('uploads', req.file.filename).replace(/\\/g, '/');
       }
@@ -115,15 +108,8 @@ router.post(
   }
 );
 
-// =======================
-// GET ALL EMPLOYEES
-// GET /api/v1/emp/employees
-// =======================
-// =======================
-// GET ALL / FILTERED EMPLOYEES
-// GET /api/v1/emp/employees
-// (optional query params: ?department=...&position=...)
-// =======================
+
+
 router.get('/employees', authenticateToken, async (req, res) => {
   try {
     const { department, position } = req.query;
@@ -145,10 +131,7 @@ router.get('/employees', authenticateToken, async (req, res) => {
 });
 
 
-// =======================
-// GET EMPLOYEE BY ID
-// GET /api/v1/emp/employees/:id
-// =======================
+
 router.get('/employees/:id', authenticateToken, async (req, res) => {
   try {
     const emp = await Employee.findById(req.params.id, { __v: 0 });
@@ -162,10 +145,7 @@ router.get('/employees/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// =======================
-// UPDATE EMPLOYEE
-// PUT /api/v1/emp/employees/:id
-// =======================
+
 router.put(
   '/employees/:id',
   authenticateToken,
@@ -188,7 +168,6 @@ router.put(
         return res.status(404).json({ message: 'Employee not found' });
       }
 
-      // Update fields if provided
       if (employeeId !== undefined) emp.employeeId = employeeId;
       if (firstName !== undefined) emp.firstName = firstName;
       if (lastName !== undefined) emp.lastName = lastName;
@@ -198,7 +177,6 @@ router.put(
       if (date_of_joining !== undefined) emp.date_of_joining = date_of_joining;
       if (department !== undefined) emp.department = department;
 
-      // If new file uploaded, optionally delete old file, then set new path
       if (req.file) {
         if (emp.profilePicture) {
           const oldPath = path.join(__dirname, '..', emp.profilePicture);
@@ -223,10 +201,7 @@ router.put(
   }
 );
 
-// =======================
-// DELETE EMPLOYEE
-// DELETE /api/v1/emp/employees/:id
-// =======================
+
 router.delete('/employees/:id', authenticateToken, async (req, res) => {
   try {
     const emp = await Employee.findById(req.params.id);
@@ -234,7 +209,6 @@ router.delete('/employees/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ message: 'Employee not found' });
     }
 
-    // Delete profile picture from disk if exists
     if (emp.profilePicture) {
       const imgPath = path.join(__dirname, '..', emp.profilePicture);
       if (fs.existsSync(imgPath)) {
@@ -251,10 +225,7 @@ router.delete('/employees/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// =======================
-// SEARCH EMPLOYEES
-// GET /api/v1/emp/employees/search?department=...&position=...
-// =======================
+
 router.get('/employees/search', authenticateToken, async (req, res) => {
   try {
     const { department, position } = req.query;

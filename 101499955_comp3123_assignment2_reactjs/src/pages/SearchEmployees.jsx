@@ -1,4 +1,3 @@
-// src/pages/SearchEmployees.jsx
 import React, { useState } from 'react';
 import {
   Card,
@@ -37,7 +36,6 @@ const SearchEmployees = () => {
     setError('');
     setHasSearched(false);
 
-    // If nothing is provided, we can either show error or treat as "no filter"
     if (!department && !position) {
       setError('Please enter department, position, or both to search.');
       return;
